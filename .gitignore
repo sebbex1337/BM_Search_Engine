@@ -219,6 +219,7 @@ package
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+legacy_code/src/backend/venv
 
 ### VisualStudioCode ###
 .vscode/*
