@@ -1,9 +1,11 @@
-package handlers
+package handlers_test
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/UpsDev42069/BM_Search_Engine/backend/handlers"
 )
 
 func TestSearchHandler(t *testing.T) {
@@ -38,7 +40,7 @@ func TestSearchHandler(t *testing.T) {
 			rr := httptest.NewRecorder()
 
 			// Call the handler function
-			SearchHandler(rr, req)
+			handlers.SearchHandlerLucas(rr, req)
 
 			// Check the status code
 			if got := rr.Code; got != tt.expectedCode {

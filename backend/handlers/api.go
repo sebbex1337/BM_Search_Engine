@@ -57,38 +57,46 @@ func RootPost(w http.ResponseWriter, r *http.Request) {
 type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Email    string `json:"email"`
 }
 
-// HandleRegister handles the user registration
-func HandleRegister(w http.ResponseWriter, r *http.Request) {
-	// Check if the request method is POST
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
+// RegisterHandler handles user registration
+func RegisterHandler(database *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 
-	// Parse the request body
-	var user User
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
-		return
-	}
+		var user User
+		err := json.NewDecoder(r.Body).Decode(&user)
+		if err != nil {
+			http.Error(w, "Invalid request payload", http.StatusBadRequest)
+			return
+		}
 
-	// Validate the user data
-	if user.Username == "" || user.Password == "" {
-		http.Error(w, "Missing required fields", http.StatusBadRequest)
-		return
-	}
-	
-	// TODO save your user to a database
+		if user.Username == "" || user.Password == "" || user.Email == "" {
+			http.Error(w, "Missing required fields", http.StatusBadRequest)
+			return
+		}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("User registered successfully"))
+		// Save the user to the database
+		insertUserSQL := `INSERT INTO users (username, password, email) VALUES (?, ?, ?)`
+		_, err = database.Exec(insertUserSQL, user.Username, user.Password, user.Email)
+		if err != nil {
+			http.Error(w, "Failed to register user", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusCreated)
+		w.Write([]byte("User registered successfully"))
+	}
 }
+
 
 // Error logic if search query is empty
-func SearchHandler(w http.ResponseWriter, r *http.Request) {
+func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
+	// function body
 	query := r.URL.Query().Get("q")
 	if query == "" {
 		http.Error(w, "Missing query parameter", http.StatusBadRequest)
