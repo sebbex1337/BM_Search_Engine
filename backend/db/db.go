@@ -64,9 +64,12 @@ func QueryDB(db *sql.DB, query string, args ...interface{}) ([]map[string]interf
         return nil, err
     }
 
+	// Initialize an empty slice to hold the query results
     results := make([]map[string]interface{}, 0)
     for rows.Next() {
+		// Creates a slice to hold the column values
         values := make([]interface{}, len(columns))
+		// Creates a slice of pointers to the column values
         valuePtrs := make([]interface{}, len(columns))
         for i := range values {
             valuePtrs[i] = &values[i]
@@ -76,6 +79,7 @@ func QueryDB(db *sql.DB, query string, args ...interface{}) ([]map[string]interf
             return nil, err
         }
 
+		// Creates a map to hold the column name-value pairs
         result := make(map[string]interface{})
         for i, col := range columns {
             result[col] = values[i]
