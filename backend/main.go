@@ -13,6 +13,9 @@ func main() {
 	r := mux.NewRouter()
 	// Existing routes
 	r.HandleFunc("/", handlers.RootGet).Methods("GET")
+	
+	// Route for registering a new user
+	r.HandleFunc("/api/register", handlers.RootPost).Methods("POST")
 
 	// New route for /api/search
 	r.HandleFunc("/api/search", handlers.SearchHandler).Methods("GET")
