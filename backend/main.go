@@ -13,5 +13,8 @@ import (
 func main(){
 	r := mux.NewRouter()
 	r.HandleFunc("/", handlers.RootGet).Methods("GET")
+	
+	// Route for registering a new user
+	r.HandleFunc("/api/register", handlers.RootPost).Methods("POST")
 	http.ListenAndServe(":8080", r)
 }
