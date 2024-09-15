@@ -5,7 +5,7 @@ import (
 	//Internal imports
 	"log"
 	"net/http"
-  
+
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/handlers"
 
@@ -33,7 +33,7 @@ func main(){
 	r.HandleFunc("/api/search", handlers.SearchHandler(database)).Methods("GET")
   
   // Route for registering a new user
-	r.HandleFunc("/api/register", handlers.RootPost).Methods("POST")
+	r.HandleFunc("/api/register", handlers.RegisterHandler(database)).Methods("POST")
 
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")
