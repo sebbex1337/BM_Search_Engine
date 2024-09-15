@@ -54,3 +54,14 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("User registered successfully"))
 }
+
+// Error logic if search query is empty
+func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query().Get("q")
+	if query == "" {
+		http.Error(w, "Missing query parameter", http.StatusBadRequest)
+		return
+	}
+	
+	w.Write([]byte("Searching for " + query))
+}
