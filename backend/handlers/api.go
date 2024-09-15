@@ -15,6 +15,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing query parameter", http.StatusBadRequest)
 		return
 	}
-	w.Write([]byte("Searching for"))
-	//w.Write([]byte("Searching for " + query))
+	
+	w.Write([]byte("Searching for " + query))
 }
