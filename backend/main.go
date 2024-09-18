@@ -35,6 +35,8 @@ func main(){
   // Route for registering a new user
 	r.HandleFunc("/api/register", handlers.RegisterHandler(database)).Methods("POST")
 
+	r.HandleFunc("api/login", handlers.LoginHandler(database)).Methods("POST")
+
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")
 
