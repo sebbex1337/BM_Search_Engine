@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"golang.org/x/crypto/bcrypt"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/security"
 )
@@ -113,3 +114,57 @@ func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Searching for " + query))
 }
 
+/////////////////////////////////////////
+//	 	Login logic for useres         //
+/////////////////////////////////////////
+
+// LoginHandler handles user login
+func LoginHandler(database *sql.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        if r.Method != http.MethodPost {
+            http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+            return
+        }
+
+        var user User
+        err := json.NewDecoder(r.Body).Decode(&user)
+        if err != nil {
+            http.Error(w, "Invalid request payload", http.StatusBadRequest)
+            return
+        }
+
+        if user.Username == "" || user.Password == "" {
+            http.Error(w, "Missing required fields", http.StatusBadRequest)
+            return
+        }
+
+        // Query the database for the user
+        var dbUser User
+        err = database.QueryRow("SELECT username, password, email FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password, &dbUser.Email)
+        if err != nil {
+            if err == sql.ErrNoRows {
+                http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+            } else {
+                http.Error(w, "Internal server error", http.StatusInternalServerError)
+            }
+            return
+        }
+
+        // Validate the password
+        if !CheckPasswordHash(user.Password, dbUser.Password) {
+            http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+            return
+        }
+
+        // Return success response
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(http.StatusOK)
+        w.Write([]byte(`{"message":"Login successful"}`))
+    }
+}
+
+// CheckPasswordHash compares a plain text password with a hashed password
+func CheckPasswordHash(password, hash string) bool {
+    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+    return err == nil
+}

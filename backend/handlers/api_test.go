@@ -1,79 +1,115 @@
 package handlers_test
 
-/* import (
+import (
     "bytes"
+    "database/sql"
     "encoding/json"
     "net/http"
     "net/http/httptest"
     "testing"
+    "golang.org/x/crypto/bcrypt" // Import bcrypt for password hashing
 
     "github.com/UpsDev42069/BM_Search_Engine/backend/handlers"
-) */
+    _ "github.com/mattn/go-sqlite3" // Import the SQLite driver
+)
 
-// NOT WORKING FOR NOW
-/* 
-func TestHandleRegister(t *testing.T) {
+// Mock database connection (replace with actual mock if needed)
+var mockDB *sql.DB
+
+// User struct (assuming it's defined somewhere in your code)
+type User struct {
+    Username string `json:"username"`
+    Password string `json:"password"`
+    Email    string `json:"email"`
+}
+
+// CheckPasswordHash compares a plain password with a hashed password
+func CheckPasswordHash(password, hash string) bool {
+    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+    return err == nil
+}
+
+func setupMockDB() {
+    var err error
+    mockDB, err = sql.Open("sqlite3", ":memory:")
+    if err != nil {
+        panic(err)
+    }
+
+    // Create the users table
+    createTableSQL := `
+    CREATE TABLE users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL,
+        email TEXT NOT NULL
+    );`
+    _, err = mockDB.Exec(createTableSQL)
+    if err != nil {
+        panic(err)
+    }
+}
+
+func TestLoginHandler(t *testing.T) {
+    setupMockDB() // Initialize the mock database
+
+    // Insert a test user into the mock database
+    hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("testpassword"), bcrypt.DefaultCost)
+    _, err := mockDB.Exec("INSERT INTO users (username, password, email) VALUES (?, ?, ?)", "testuser", string(hashedPassword), "test@example.com")
+    if err != nil {
+        t.Fatalf("Failed to insert test user: %v", err)
+    }
+
     tests := []struct {
-        name           string
-        method         string
-        body           interface{}
-        expectedStatus int
-        expectedBody   string
+        name         string
+        user         User
+        expectedCode int
+        expectedBody string
     }{
         {
-            name:           "Valid request",
-            method:         http.MethodPost,
-            body:           handlers.User{Username: "testuser", Password: "password"},
-            expectedStatus: http.StatusCreated,
-            expectedBody:   "User registered successfully",
+            name: "valid login",
+			user: User{
+                Username: "testuser",
+                Password: "testpassword",
+            },
+            expectedCode: http.StatusOK,
+            expectedBody: `{"message":"Login successful"}`,
         },
         {
-            name:           "Invalid method",
-            method:         http.MethodGet,
-            body:           nil,
-            expectedStatus: http.StatusMethodNotAllowed,
-            expectedBody:   "Method not allowed\n",
-        },
-        {
-            name:           "Invalid payload",
-            method:         http.MethodPost,
-            body:           "invalid",
-            expectedStatus: http.StatusBadRequest,
-            expectedBody:   "Invalid request payload\n",
-        },
-        {
-            name:           "Missing fields",
-            method:         http.MethodPost,
-            body:           handlers.User{Username: "", Password: ""},
-            expectedStatus: http.StatusBadRequest,
-            expectedBody:   "Missing required fields\n",
+            name: "invalid login",
+            user: User{
+                Username: "wronguser",
+                Password: "wrongpassword",
+            },
+            expectedCode: http.StatusUnauthorized,
+            expectedBody: "Invalid credentials\n",
         },
     }
 
     for _, tt := range tests {
         t.Run(tt.name, func(t *testing.T) {
-            var body []byte
-            if tt.body != nil {
-                body, _ = json.Marshal(tt.body)
+            payload, err := json.Marshal(tt.user)
+            if err != nil {
+                t.Fatalf("Failed to marshal user: %v", err)
             }
 
-            req := httptest.NewRequest(tt.method, "/register", bytes.NewBuffer(body))
-            w := httptest.NewRecorder()
-
-            handlers.HandleRegister(w, req)
-
-            resp := w.Result()
-            defer resp.Body.Close()
-
-            if resp.StatusCode != tt.expectedStatus {
-                t.Errorf("expected status %d, got %d", tt.expectedStatus, resp.StatusCode)
+            req, err := http.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
+            if err != nil {
+                t.Fatalf("Failed to create request: %v", err)
             }
 
-            respBody := new(bytes.Buffer)
-            respBody.ReadFrom(resp.Body)
-            if respBody.String() != tt.expectedBody {
-                t.Errorf("expected body %q, got %q", tt.expectedBody, respBody.String())
+            rr := httptest.NewRecorder()
+            handler := handlers.LoginHandler(mockDB)
+            handler.ServeHTTP(rr, req)
+
+            if status := rr.Code; status != tt.expectedCode {
+                t.Errorf("handler returned wrong status code: got %v want %v", status, tt.expectedCode)
+            }
+
+            respBody := rr.Body.String()
+            if respBody != tt.expectedBody {
+                t.Errorf("expected body %q, got %q", tt.expectedBody, respBody)
             }
         })
     }
-} */
+}
