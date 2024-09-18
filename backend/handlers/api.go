@@ -2,13 +2,12 @@ package handlers
 
 // Imports for the handlers
 import (
-
 	"database/sql"
 	"encoding/json"
 	"net/http"
 
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
-
+	"github.com/UpsDev42069/BM_Search_Engine/backend/security"
 )
 
 // RootGet handles the root GET request
@@ -82,7 +81,15 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 
 		// Save the user to the database
 		insertUserSQL := `INSERT INTO users (username, password, email) VALUES (?, ?, ?)`
-		_, err = database.Exec(insertUserSQL, user.Username, user.Password, user.Email)
+
+		// Hash password before saving it to the database
+		hashedPassword, err := security.HashPassword(user.Password)
+		if err != nil {
+			http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+			return
+		}
+		
+		_, err = database.Exec(insertUserSQL, user.Username, hashedPassword, user.Email)
 		if err != nil {
 			http.Error(w, "Failed to register user", http.StatusInternalServerError)
 			return
