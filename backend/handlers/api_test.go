@@ -13,7 +13,7 @@ import (
     _ "github.com/mattn/go-sqlite3" // Import the SQLite driver
 )
 
-// Mock database connection (replace with actual mock if needed)
+// Mock database connection 
 var mockDB *sql.DB
 
 // User struct (assuming it's defined somewhere in your code)
@@ -93,7 +93,7 @@ func TestLoginHandler(t *testing.T) {
                 t.Fatalf("Failed to marshal user: %v", err)
             }
 
-            req, err := http.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
+            req, err := http.NewRequest(http.MethodPost, "/api/login", bytes.NewBuffer(payload))
             if err != nil {
                 t.Fatalf("Failed to create request: %v", err)
             }

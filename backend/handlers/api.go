@@ -54,7 +54,7 @@ func RootPost(w http.ResponseWriter, r *http.Request) {
 /////////////////////////////////////////
 
 // User represents the user registration data
-type User struct {
+type RegisterRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
@@ -68,7 +68,7 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		var user User
+		var user RegisterRequest
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -118,6 +118,12 @@ func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
 //	 	Login logic for useres         //
 /////////////////////////////////////////
 
+// LoginRequest represents the user login data
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 // LoginHandler handles user login
 func LoginHandler(database *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
@@ -126,7 +132,7 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
             return
         }
 
-        var user User
+        var user LoginRequest
         err := json.NewDecoder(r.Body).Decode(&user)
         if err != nil {
             http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -139,8 +145,8 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
         }
 
         // Query the database for the user
-        var dbUser User
-        err = database.QueryRow("SELECT username, password, email FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password, &dbUser.Email)
+        var dbUser LoginRequest
+        err = database.QueryRow("SELECT username, password FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password)
         if err != nil {
             if err == sql.ErrNoRows {
                 http.Error(w, "Invalid credentials", http.StatusUnauthorized)
