@@ -1,0 +1,19 @@
+{{define "title"}}Search{{end}}
+
+{{define "body"}}
+<div>
+    <form action="{{url "search"}}" method="GET">
+        <input type="text" name="q" placeholder="Search" value="{{.Query}}">
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<div id="results">
+    {{range .SearchResults}}
+    <div>
+        <h2><a href="{{.URL}}" class="search-result-title">{{.Title}}</a></h2>
+        <p>{{.Description}}</p>
+    </div>
+    {{end}}
+</div>
+{{end}}

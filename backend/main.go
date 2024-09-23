@@ -27,24 +27,23 @@ func main(){
 	}
 
 	r := mux.NewRouter()
-	// Existing routes
-	r.HandleFunc("/", handlers.RootGet).Methods("GET")
+	handlers.SetRouter(r)
 
+	// PAGE ROUTES
+	r.HandleFunc("/", handlers.RootTemplateHandler(database)).Methods("GET").Name("root")
+	r.HandleFunc("/search", handlers.SearchTemplateHandler(database)).Methods("GET").Name("search")
+	r.HandleFunc("/about", handlers.AboutTemplateHandler).Methods("GET").Name("about")
+	r.HandleFunc("/login", handlers.LoginTemplateHandler).Methods("GET").Name("login")
+	r.HandleFunc("/register", handlers.RegisterTemplateHandler).Methods("GET").Name("register")
+
+	// API ROUTES
 	r.HandleFunc("/api/search", handlers.SearchHandler(database)).Methods("GET")
-  
-  // Route for registering a new user
 	r.HandleFunc("/api/register", handlers.RegisterHandler(database)).Methods("POST")
-
-  // Route for logging in a user
 	r.HandleFunc("api/login", handlers.LoginHandler(database)).Methods("POST")
+
 
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")
-
-
-	// New route for /api/search
-	//r.HandleFunc("/api/search", handlers.SearchHandler).Methods("GET")
-
 
 	http.ListenAndServe(":8080", r)
 }

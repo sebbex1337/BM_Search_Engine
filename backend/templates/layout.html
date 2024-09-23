@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Who Knows? - {{block "title" .}}{{end}}</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+    <div class="page">
+        <nav class="navigation">
+            <h1><a href="{{url "search"}}" id="nav-logo">¿Who Knows?</a></h1>
+            {{if .User}}
+                <a href="{{url "logout"}}" id="nav-logout">Log out [{{.User.Username}}]</a>
+            {{else}}
+                <a href="{{url "login"}}" id="nav-login">Log in</a>
+                <a href="{{url "register"}}" id="nav-register">Register</a>
+            {{end}}
+        </nav>
+        <!-- NOT SURE WHAT THIS IS YET? -->
+        <!-- {{range .Flashes}}
+            <div class="flash-message">{{.}}</div>
+        {{end}} -->
+        <div class="body">
+            {{block "body" .}}{{end}}
+        </div>
+        <footer class="footer">
+            ¿Who Knows? © 2009 <a href="{{url "about"}}">About</a>
+        </footer>
+    </div>
+</body>
+</html>
