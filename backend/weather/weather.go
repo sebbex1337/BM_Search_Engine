@@ -8,10 +8,10 @@ import (
 	"net/url"
 )
 
-// baseURL is the base URL for the OpenWeatherMap API
-const baseURL = "https://api.openweathermap.org/data/3.0/weather" // Corrected endpoint
+// baseURL is the base URL for the OpenWeatherMap API (corrected to v2.5)
+const baseURL = "https://api.openweathermap.org/data/2.5/weather"
 
-// Weather represents the weather data returned by the API
+// WeatherResponse represents the weather data returned by the API
 type WeatherResponse struct {
 	Main struct {
 		Temp float64 `json:"temp"` // Temperature in Celsius
