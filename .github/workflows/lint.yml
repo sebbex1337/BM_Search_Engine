@@ -25,10 +25,19 @@ jobs:
         run: go install golang.org/x/lint/golint@latest
 
       - name: Run Gofmt
-        run: gofmt -l .
+        run: |
+          cd backend
+          if [ -n "$(gofmt -l .)" ]; then
+            echo "Code is not formatted correctly. Please run 'gofmt -w .' and commit the changes."
+            exit 1
+          fi
 
       - name: Run Go Vet
-        run: go vet ./...
+        run: |
+          cd backend
+          go vet ./...
 
       - name: Run Golint
-        run: golint ./...
+        run: |
+          cd backend
+          golint ./...
