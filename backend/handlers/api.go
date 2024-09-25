@@ -5,9 +5,12 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/security"
+	"github.com/UpsDev42069/BM_Search_Engine/backend/weather"
+	"github.com/joho/godotenv"
 )
 
 type AuthResponse struct {
@@ -91,7 +94,7 @@ func RootPost(w http.ResponseWriter, r *http.Request) {
 /////////////////////////////////////////
 
 // User represents the user registration data
-type User struct {
+type RegisterRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
@@ -105,7 +108,7 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		var user User
+		var user RegisterRequest
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -173,8 +176,14 @@ func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
 }
 
 /////////////////////////////////////////
-//	 	Login logic for useres         //
+//	 	Login logic for users        //
 /////////////////////////////////////////
+
+// LoginRequest represents the user login data
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
 
 // LoginHandler handles user login
 func LoginHandler(database *sql.DB) http.HandlerFunc {
@@ -184,7 +193,7 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
             return
         }
 
-        var user User
+        var user LoginRequest
         err := json.NewDecoder(r.Body).Decode(&user)
         if err != nil {
             http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -212,8 +221,8 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
         }
 
         // Query the database for the user
-        var dbUser User
-        err = database.QueryRow("SELECT username, password, email FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password, &dbUser.Email)
+        var dbUser LoginRequest
+        err = database.QueryRow("SELECT username, password FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password)
         if err != nil {
             if err == sql.ErrNoRows {
                 http.Error(w, "Invalid credentials", http.StatusUnauthorized)
@@ -240,6 +249,37 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
         w.Header().Set("Content-Type", "application/json")
         json.NewEncoder(w).Encode(AuthResponse{StatusCode: http.StatusOK, Message: "Login successful"})
     }
+}
+// WeatherHandler that handles the weather request so that it can be called from the frontend
+func WeatherHandler(w http.ResponseWriter, r *http.Request) {
+	if err := godotenv.Load(); err != nil{
+		http.Error(w, "Error loading .env file", http.StatusInternalServerError)
+		return
+	}
+	apiKey := os.Getenv("API_KEY")
+	if apiKey == "" {
+		http.Error(w, "API_KEY is not set in .env file", http.StatusInternalServerError)
+		return
+	}
+	// Get the city from the query parameters
+	/* city := r.URL.Query().Get("city")
+	if city == "" {
+		http.Error(w, "City parameter is required", http.StatusBadRequest)
+		return
+	} */
+	// Fetch the weather data for the city
+	weatherResponse, err := weather.GetWeather("Copenhagen", apiKey)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//Set response header and send JSON response
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(weatherResponse); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
