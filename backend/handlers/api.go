@@ -9,9 +9,9 @@ import (
 
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/security"
-	"golang.org/x/crypto/bcrypt"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/weather"
 	"github.com/joho/godotenv"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // RootGet handles the root GET request
@@ -168,9 +168,10 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
 		w.Write([]byte(`{"message":"Login successful"}`))
 	}
 }
+
 // WeatherHandler that handles the weather request so that it can be called from the frontend
 func WeatherHandler(w http.ResponseWriter, r *http.Request) {
-	if err := godotenv.Load(); err != nil{
+	if err := godotenv.Load(); err != nil {
 		http.Error(w, "Error loading .env file", http.StatusInternalServerError)
 		return
 	}
