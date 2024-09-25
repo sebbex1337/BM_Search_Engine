@@ -47,7 +47,6 @@ func RootGet(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World!"))
 }
 
-
 func SearchHandler(database *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query().Get("q")
@@ -87,7 +86,6 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 func RootPost(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World!"))
 }
-
 
 /////////////////////////////////////////
 // Funtions for registering a new user //
@@ -149,7 +147,7 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 			http.Error(w, "Failed to hash password", http.StatusInternalServerError)
 			return
 		}
-		
+
 		_, err = database.Exec(insertUserSQL, user.Username, hashedPassword, user.Email)
 		if err != nil {
 			http.Error(w, "Failed to register user", http.StatusInternalServerError)
@@ -171,7 +169,7 @@ func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing query parameter", http.StatusBadRequest)
 		return
 	}
-	
+
 	w.Write([]byte("Searching for " + query))
 }
 
@@ -187,18 +185,18 @@ type LoginRequest struct {
 
 // LoginHandler handles user login
 func LoginHandler(database *sql.DB) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        if r.Method != http.MethodPost {
-            http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-            return
-        }
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 
-        var user LoginRequest
-        err := json.NewDecoder(r.Body).Decode(&user)
-        if err != nil {
-            http.Error(w, "Invalid request payload", http.StatusBadRequest)
-            return
-        }
+		var user LoginRequest
+		err := json.NewDecoder(r.Body).Decode(&user)
+		if err != nil {
+			http.Error(w, "Invalid request payload", http.StatusBadRequest)
+			return
+		}
 
         if user.Username == "" || user.Password == "" {
             w.Header().Set("Content-Type", "application/json")
@@ -250,9 +248,10 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
         json.NewEncoder(w).Encode(AuthResponse{StatusCode: http.StatusOK, Message: "Login successful"})
     }
 }
+
 // WeatherHandler that handles the weather request so that it can be called from the frontend
 func WeatherHandler(w http.ResponseWriter, r *http.Request) {
-	if err := godotenv.Load(); err != nil{
+	if err := godotenv.Load(); err != nil {
 		http.Error(w, "Error loading .env file", http.StatusInternalServerError)
 		return
 	}
