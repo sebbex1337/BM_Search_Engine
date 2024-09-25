@@ -5,10 +5,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/security"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/UpsDev42069/BM_Search_Engine/backend/weather"
+	"github.com/joho/godotenv"
 )
 
 // RootGet handles the root GET request
@@ -112,7 +115,7 @@ func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
 }
 
 /////////////////////////////////////////
-//	 	Login logic for useres         //
+//	 	Login logic for users        //
 /////////////////////////////////////////
 
 // LoginRequest represents the user login data
@@ -164,6 +167,37 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"message":"Login successful"}`))
 	}
+}
+// WeatherHandler that handles the weather request so that it can be called from the frontend
+func WeatherHandler(w http.ResponseWriter, r *http.Request) {
+	if err := godotenv.Load(); err != nil{
+		http.Error(w, "Error loading .env file", http.StatusInternalServerError)
+		return
+	}
+	apiKey := os.Getenv("API_KEY")
+	if apiKey == "" {
+		http.Error(w, "API_KEY is not set in .env file", http.StatusInternalServerError)
+		return
+	}
+	// Get the city from the query parameters
+	/* city := r.URL.Query().Get("city")
+	if city == "" {
+		http.Error(w, "City parameter is required", http.StatusBadRequest)
+		return
+	} */
+	// Fetch the weather data for the city
+	weatherResponse, err := weather.GetWeather("Copenhagen", apiKey)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//Set response header and send JSON response
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(weatherResponse); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 }
 
 // CheckPasswordHash compares a plain text password with a hashed password
