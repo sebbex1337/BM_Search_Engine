@@ -14,8 +14,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-
-func main(){
+func main() {
 	database, err := db.ConnectDB(false)
 	if err != nil {
 		log.Fatal(err)
@@ -31,20 +30,18 @@ func main(){
 	r.HandleFunc("/", handlers.RootGet).Methods("GET")
 
 	r.HandleFunc("/api/search", handlers.SearchHandler(database)).Methods("GET")
-  
-  // Route for registering a new user
+
+	// Route for registering a new user
 	r.HandleFunc("/api/register", handlers.RegisterHandler(database)).Methods("POST")
 
-  // Route for logging in a user
+	// Route for logging in a user
 	r.HandleFunc("api/login", handlers.LoginHandler(database)).Methods("POST")
 
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")
 
-
 	// New route for /api/search
 	//r.HandleFunc("/api/search", handlers.SearchHandler).Methods("GET")
-
 
 	http.ListenAndServe(":8080", r)
 }

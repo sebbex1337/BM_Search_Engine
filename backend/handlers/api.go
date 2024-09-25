@@ -6,16 +6,15 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"golang.org/x/crypto/bcrypt"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/security"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // RootGet handles the root GET request
 func RootGet(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World!"))
 }
-
 
 func SearchHandler(database *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +27,7 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 		var searchResults []map[string]interface{}
 		if q != "" {
 			query := "SELECT * FROM pages WHERE language = ? AND content LIKE ?"
-			args := []interface{}{language, "%"+q+"%"}
+			args := []interface{}{language, "%" + q + "%"}
 			results, err := db.QueryDB(database, query, args...)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -47,7 +46,6 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 func RootPost(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World!"))
 }
-
 
 /////////////////////////////////////////
 // Funtions for registering a new user //
@@ -89,7 +87,7 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 			http.Error(w, "Failed to hash password", http.StatusInternalServerError)
 			return
 		}
-		
+
 		_, err = database.Exec(insertUserSQL, user.Username, hashedPassword, user.Email)
 		if err != nil {
 			http.Error(w, "Failed to register user", http.StatusInternalServerError)
@@ -101,7 +99,6 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 	}
 }
 
-
 // Error logic if search query is empty
 func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
 	// function body
@@ -110,7 +107,7 @@ func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing query parameter", http.StatusBadRequest)
 		return
 	}
-	
+
 	w.Write([]byte("Searching for " + query))
 }
 
@@ -126,51 +123,51 @@ type LoginRequest struct {
 
 // LoginHandler handles user login
 func LoginHandler(database *sql.DB) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        if r.Method != http.MethodPost {
-            http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-            return
-        }
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 
-        var user LoginRequest
-        err := json.NewDecoder(r.Body).Decode(&user)
-        if err != nil {
-            http.Error(w, "Invalid request payload", http.StatusBadRequest)
-            return
-        }
+		var user LoginRequest
+		err := json.NewDecoder(r.Body).Decode(&user)
+		if err != nil {
+			http.Error(w, "Invalid request payload", http.StatusBadRequest)
+			return
+		}
 
-        if user.Username == "" || user.Password == "" {
-            http.Error(w, "Missing required fields", http.StatusBadRequest)
-            return
-        }
+		if user.Username == "" || user.Password == "" {
+			http.Error(w, "Missing required fields", http.StatusBadRequest)
+			return
+		}
 
-        // Query the database for the user
-        var dbUser LoginRequest
-        err = database.QueryRow("SELECT username, password FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password)
-        if err != nil {
-            if err == sql.ErrNoRows {
-                http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-            } else {
-                http.Error(w, "Internal server error", http.StatusInternalServerError)
-            }
-            return
-        }
+		// Query the database for the user
+		var dbUser LoginRequest
+		err = database.QueryRow("SELECT username, password FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			} else {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+			}
+			return
+		}
 
-        // Validate the password
-        if !CheckPasswordHash(user.Password, dbUser.Password) {
-            http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-            return
-        }
+		// Validate the password
+		if !CheckPasswordHash(user.Password, dbUser.Password) {
+			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			return
+		}
 
-        // Return success response
-        w.Header().Set("Content-Type", "application/json")
-        w.WriteHeader(http.StatusOK)
-        w.Write([]byte(`{"message":"Login successful"}`))
-    }
+		// Return success response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"message":"Login successful"}`))
+	}
 }
 
 // CheckPasswordHash compares a plain text password with a hashed password
 func CheckPasswordHash(password, hash string) bool {
-    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-    return err == nil
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
