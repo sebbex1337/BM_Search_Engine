@@ -14,8 +14,8 @@ import (
 )
 
 type AuthResponse struct {
-	StatusCode int `json:"statusCode"`
-	Message string `json:"message"`
+	StatusCode int    `json:"statusCode"`
+	Message    string `json:"message"`
 }
 
 type SearchResponse struct {
@@ -27,8 +27,8 @@ type StandardResponse struct {
 }
 
 type RequestValidationError struct {
-	StatusCode int `json:"statusCode"`
-	Message string `json:"message"`
+	StatusCode int    `json:"statusCode"`
+	Message    string `json:"message"`
 }
 
 type HTTPValidationError struct {
@@ -36,11 +36,10 @@ type HTTPValidationError struct {
 }
 
 type ValidationError struct {
-	Loc []interface{} `json:"loc"`
-	Msg string `json:"msg"`
-	Type string `json:"type"`
+	Loc  []interface{} `json:"loc"`
+	Msg  string        `json:"msg"`
+	Type string        `json:"type"`
 }
-
 
 // RootGet handles the root GET request
 func RootGet(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +54,7 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 			w.WriteHeader(http.StatusUnprocessableEntity)
 			json.NewEncoder(w).Encode(RequestValidationError{
 				StatusCode: 422,
-				Message: "Query parameter is required",
+				Message:    "Query parameter is required",
 			})
 			return
 		}
@@ -67,7 +66,7 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 
 		var searchResults []map[string]interface{}
 		query := "SELECT * FROM pages WHERE language = ? AND content LIKE ?"
-		args := []interface{}{language, "%"+q+"%"}
+		args := []interface{}{language, "%" + q + "%"}
 		results, err := db.QueryDB(database, query, args...)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -119,18 +118,18 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 			json.NewEncoder(w).Encode(HTTPValidationError{
 				Detail: []ValidationError{
 					{
-						Loc: []interface{}{"body", "username"},
-						Msg: "field required",
+						Loc:  []interface{}{"body", "username"},
+						Msg:  "field required",
 						Type: "value_error.missing",
 					},
 					{
-						Loc: []interface{}{"body", "password"},
-						Msg: "field required",
+						Loc:  []interface{}{"body", "password"},
+						Msg:  "field required",
 						Type: "value_error.missing",
 					},
 					{
-						Loc: []interface{}{"body", "email"},
-						Msg: "field required",
+						Loc:  []interface{}{"body", "email"},
+						Msg:  "field required",
 						Type: "value_error.missing",
 					},
 				},
@@ -158,8 +157,6 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 		json.NewEncoder(w).Encode(AuthResponse{StatusCode: http.StatusOK, Message: "User registered successfully"})
 	}
 }
-
-
 
 // Error logic if search query is empty
 func SearchHandlerLucas(w http.ResponseWriter, r *http.Request) {
@@ -198,43 +195,43 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
 			return
 		}
 
-        if user.Username == "" || user.Password == "" {
-            w.Header().Set("Content-Type", "application/json")
+		if user.Username == "" || user.Password == "" {
+			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnprocessableEntity)
 			json.NewEncoder(w).Encode(HTTPValidationError{
 				Detail: []ValidationError{
 					{
-						Loc: []interface{}{"body", "username"},
-						Msg: "field required",
+						Loc:  []interface{}{"body", "username"},
+						Msg:  "field required",
 						Type: "value_error.missing",
 					},
 					{
-						Loc: []interface{}{"body", "password"},
-						Msg: "field required",
+						Loc:  []interface{}{"body", "password"},
+						Msg:  "field required",
 						Type: "value_error.missing",
 					},
 				},
 			})
 			return
-        }
+		}
 
-        // Query the database for the user
-        var dbUser LoginRequest
-        err = database.QueryRow("SELECT username, password FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password)
-        if err != nil {
-            if err == sql.ErrNoRows {
-                http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-            } else {
-                http.Error(w, "Internal server error", http.StatusInternalServerError)
-            }
-            return
-        }
-		
-        // Validate the password
-        if !security.CheckPasswordHash(dbUser.Password, user.Password) {
-            http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-            return
-        }
+		// Query the database for the user
+		var dbUser LoginRequest
+		err = database.QueryRow("SELECT username, password FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			} else {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+			}
+			return
+		}
+
+		// Validate the password
+		if !security.CheckPasswordHash(dbUser.Password, user.Password) {
+			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			return
+		}
 
 		//Create a new session
 		err = security.CreateSession(w, r, dbUser.Username)
@@ -243,10 +240,10 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
 			return
 		}
 
-        // Return success response
-        w.Header().Set("Content-Type", "application/json")
-        json.NewEncoder(w).Encode(AuthResponse{StatusCode: http.StatusOK, Message: "Login successful"})
-    }
+		// Return success response
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(AuthResponse{StatusCode: http.StatusOK, Message: "Login successful"})
+	}
 }
 
 // WeatherHandler that handles the weather request so that it can be called from the frontend
