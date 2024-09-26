@@ -1,5 +1,7 @@
 # Pull Request
 
+### OBS!!! Run the command `Gofmt -w .` before committing your changes. This will format your code to be consistent with the rest of the project.
+
 ## What type of PR is this? (check all applicable)
 
 - [ ] ✨ Feature
