@@ -1,6 +1,6 @@
 # BM_Search_Engine
 
-This is a search engine that searches for code language keywords. The project is written in GO for the backend and in Svelte for the frontend.
+This is a search engine that searches for code language keywords. The project is written in Go for the backend and in Svelte for the frontend.
 
 ## Getting Started
 
@@ -8,53 +8,77 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+What things you need to install the software and how to install them:
 
-```
-Give examples
-```
+- **Go**: You need to have Go installed on your machine. You can download it from [here](https://golang.org/dl/).
+- **Node.js and npm**: You need to have Node.js and npm installed. You can download them from [here](https://nodejs.org/).
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+A step-by-step series of examples that tell you how to get a development environment running.
 
-Say what the step will be
+#### Backend (Go)
 
-```
-Give the example
-```
+1. **Clone the repository**:
 
-And repeat
+    ```sh
+    git clone https://github.com/yourusername/BM_Search_Engine.git
+    cd BM_Search_Engine/backend
+    ```
 
-```
-until finished
-```
+2. **Install dependencies**:
 
-End with an example of getting some data out of the system or using it for a little demo
+    ```sh
+    go mod tidy
+    ```
 
-## Running the tests
+3. **Run the backend server**:
 
-Explain how to run the automated tests for this system
+    ```sh
+    go run main.go
+    ```
 
-### Break down into end to end tests
+#### Frontend (Svelte)
+WORK IN PROGRESS
 
-Explain what these tests test and why
 
-```
-Give an example
-```
+### Running the Tests
 
-### And coding style tests
+Explain how to run the automated tests for this system.
 
-Explain what these tests test and why
+#### Backend Tests
 
-```
-Give an example
-```               
+1. **Navigate to the backend directory**:
 
-## Deployment
+    ```sh
+    cd backend
+    ```
 
-Add additional notes about how to deploy this on a live system
+2. **Run the tests**:
 
-## Built With
+    ```sh
+    go test ./...
+    ```
 
+#### Frontend Tests
+WORK IN PROGRESS
+
+
+### Deployment
+WORK IN PROGRESS
+
+### Built With
+
+- [Go](https://golang.org/) - The backend programming language
+- [Svelte](https://svelte.dev/) - The frontend framework
+
+
+### API Documentation
+
+To see the swagger api ui
+run the project
+```sh 
+ cd backend
+ go run main.go
+ ```
+ and go to http://localhost:8080/swagger/index.html
