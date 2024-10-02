@@ -8,10 +8,10 @@ import (
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/handlers"
 
+	_ "github.com/UpsDev42069/BM_Search_Engine/backend/docs"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	httpSwagger "github.com/swaggo/http-swagger"
-	_ "github.com/UpsDev42069/BM_Search_Engine/backend/docs"
 )
 
 // @title BM Search Engine API
