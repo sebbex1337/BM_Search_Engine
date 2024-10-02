@@ -46,6 +46,16 @@ func RootGet(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World!"))
 }
 
+// @Summary Search
+// @Description Search for content
+// @Tags search
+// @Accept  json
+// @Produce  json
+// @Param q query string true "Query"
+// @Param language query string false "Language code (e.g., 'en')"
+// @Success 200 {object} SearchResponse
+// @Failure 422 {object} RequestValidationError
+// @Router /api/search [get]
 func SearchHandler(database *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query().Get("q")
@@ -97,7 +107,18 @@ type RegisterRequest struct {
 	Email    string `json:"email"`
 }
 
-// RegisterHandler handles user registration
+// @Summary Register
+// @Description Register a new user
+// @Tags register
+// @Accept  application/json
+// @Produce  json
+// @Param username formData string true "Username"
+// @Param email formData string true "Email"
+// @Param password formData string true "Password"
+// @Param password2 formData string true "Password2"
+// @Success 200 {object} AuthResponse
+// @Failure 422 {object} HTTPValidationError
+// @Router /api/register [post]
 func RegisterHandler(database *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -180,7 +201,16 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-// LoginHandler handles user login
+// @Summary Login
+// @Description Login a user
+// @Tags login
+// @Accept  application/json
+// @Produce  json
+// @Param username formData string true "Username"
+// @Param password formData string true "Password"
+// @Success 200 {object} AuthResponse
+// @Failure 422 {object} HTTPValidationError
+// @Router /api/login [post]
 func LoginHandler(database *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -246,7 +276,12 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
 	}
 }
 
-// WeatherHandler that handles the weather request so that it can be called from the frontend
+// @Summary Weather
+// @Description Get weather information
+// @Tags weather
+// @Produce  json
+// @Success 200 {object} StandardResponse
+// @Router /api/weather [get]
 func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 	if err := godotenv.Load(); err != nil {
 		http.Error(w, "Error loading .env file", http.StatusInternalServerError)
@@ -257,12 +292,7 @@ func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "API_KEY is not set in .env file", http.StatusInternalServerError)
 		return
 	}
-	// Get the city from the query parameters
-	/* city := r.URL.Query().Get("city")
-	if city == "" {
-		http.Error(w, "City parameter is required", http.StatusBadRequest)
-		return
-	} */
+
 	// Fetch the weather data for the city
 	weatherResponse, err := weather.GetWeather("Copenhagen", apiKey)
 	if err != nil {
@@ -278,6 +308,12 @@ func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// @Summary Logout
+// @Description Logout a user
+// @Tags logout
+// @Produce  json
+// @Success 200 {object} AuthResponse
+// @Router /api/logout [get]
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	err := security.DestroySession(w, r)
 	if err != nil {

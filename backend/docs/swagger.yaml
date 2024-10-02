@@ -1,0 +1,180 @@
+basePath: /
+definitions:
+  handlers.AuthResponse:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  handlers.HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/handlers.ValidationError'
+        type: array
+    type: object
+  handlers.RequestValidationError:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  handlers.SearchResponse:
+    properties:
+      data:
+        items:
+          additionalProperties: true
+          type: object
+        type: array
+    type: object
+  handlers.StandardResponse:
+    properties:
+      data:
+        additionalProperties: true
+        type: object
+    type: object
+  handlers.ValidationError:
+    properties:
+      loc:
+        items: {}
+        type: array
+      msg:
+        type: string
+      type:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for a BM Search Engine.
+  title: BM Search Engine API
+  version: 0.1.0
+paths:
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: Username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: Password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AuthResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.HTTPValidationError'
+      summary: Login
+      tags:
+      - login
+  /api/logout:
+    get:
+      description: Logout a user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AuthResponse'
+      summary: Logout
+      tags:
+      - logout
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: Username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: Email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: Password
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: Password2
+        in: formData
+        name: password2
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AuthResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.HTTPValidationError'
+      summary: Register
+      tags:
+      - register
+  /api/search:
+    get:
+      consumes:
+      - application/json
+      description: Search for content
+      parameters:
+      - description: Query
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: Language code (e.g., 'en')
+        in: query
+        name: language
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.SearchResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.RequestValidationError'
+      summary: Search
+      tags:
+      - search
+  /api/weather:
+    get:
+      description: Get weather information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.StandardResponse'
+      summary: Weather
+      tags:
+      - weather
+swagger: "2.0"
