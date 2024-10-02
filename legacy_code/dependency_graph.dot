@@ -1,0 +1,136 @@
+digraph G {
+    node [shape=box];
+
+    app [label="app.py"];
+    
+    subgraph cluster_config {
+        label="Configuration";
+        DATABASE_PATH;
+        PER_PAGE;
+        DEBUG;
+        SECRET_KEY;
+    }
+
+    subgraph cluster_app_init {
+        label="App Initialization";
+        app_init [label="Flask(__name__)"];
+        app_secret [label="app.secret_key"];
+    }
+
+    subgraph cluster_db_functions {
+        label="Database Functions";
+        connect_db;
+        check_db_exists;
+        init_db;
+        query_db;
+        sqlite [label="sqlite3", shape=ellipse, style=filled, fillcolor=lightgrey];
+    }
+
+    subgraph cluster_user_functions {
+        label="User Functions";
+        get_user_id;
+    }
+
+    subgraph cluster_request_handlers {
+        label="Request Handlers";
+        before_request;
+        after_request;
+        g_global [label="g (global)", shape=ellipse, style=filled, fillcolor=lightgrey];
+    }
+
+    subgraph cluster_page_routes {
+        label="Page Routes";
+        search [label="/ (search)"];
+        about [label="/about (about)"];
+        login [label="/login (login)"];
+        register [label="/register (register)"];
+        logout [label="/logout (logout)"];
+    }
+
+    subgraph cluster_api_routes {
+        label="API Routes";
+        api_search [label="/api/search (api_search)"];
+        api_login [label="/api/login (api_login)"];
+        api_register [label="/api/register (api_register)"];
+    }
+
+    subgraph cluster_security_functions {
+        label="Security Functions";
+        hash_password;
+        verify_password;
+        hashlib [label="hashlib", shape=ellipse, style=filled, fillcolor=lightgrey];
+    }
+
+    subgraph cluster_main {
+        label="Main";
+        connect_main [label="connect_db()"];
+        run_main [label="app.run()"];
+    }
+
+    subgraph cluster_external {
+        label="External Dependencies";
+        flask [label="Flask", shape=ellipse, style=filled, fillcolor=lightgrey];
+        request [label="request", shape=ellipse, style=filled, fillcolor=lightgrey];
+        session [label="session", shape=ellipse, style=filled, fillcolor=lightgrey];
+        url_for [label="url_for", shape=ellipse, style=filled, fillcolor=lightgrey];
+        redirect [label="redirect", shape=ellipse, style=filled, fillcolor=lightgrey];
+        render_template [label="render_template", shape=ellipse, style=filled, fillcolor=lightgrey];
+        flash [label="flash", shape=ellipse, style=filled, fillcolor=lightgrey];
+        jsonify [label="jsonify", shape=ellipse, style=filled, fillcolor=lightgrey];
+        os [label="os", shape=ellipse, style=filled, fillcolor=lightgrey];
+        sys [label="sys", shape=ellipse, style=filled, fillcolor=lightgrey];
+        datetime [label="datetime", shape=ellipse, style=filled, fillcolor=lightgrey];
+        contextlib [label="contextlib", shape=ellipse, style=filled, fillcolor=lightgrey];
+    }
+
+    Configuration -> app [style=invis];
+    App_Initialization -> app [style=invis];
+    Database_Functions -> app [style=invis];
+    User_Functions -> app [style=invis];
+    Request_Handlers -> app [style=invis];
+    Page_Routes -> app [style=invis];
+    API_Routes -> app [style=invis];
+    Security_Functions -> app [style=invis];
+    Main -> app [style=invis];
+
+    app -> app_init;
+    app -> app_secret;
+    app -> connect_db;
+    app -> check_db_exists;
+    app -> init_db;
+    app -> query_db;
+    app -> get_user_id;
+    app -> before_request;
+    app -> after_request;
+    app -> search;
+    app -> about;
+    app -> login;
+    app -> register;
+    app -> logout;
+    app -> api_search;
+    app -> api_login;
+    app -> api_register;
+    app -> hash_password;
+    app -> verify_password;
+    app -> connect_main;
+    app -> run_main;
+    connect_db -> sqlite;
+    query_db -> sqlite;
+    hash_password -> hashlib;
+    verify_password -> hashlib;
+    before_request -> g_global;
+    after_request -> g_global;
+
+    app -> flask;
+    app -> request;
+    app -> session;
+    app -> url_for;
+    app -> redirect;
+    app -> render_template;
+    app -> flash;
+    app -> jsonify;
+    app -> os;
+    app -> sys;
+    app -> datetime;
+    app -> contextlib;
+}
