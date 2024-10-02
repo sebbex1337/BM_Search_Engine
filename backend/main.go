@@ -7,7 +7,6 @@ import (
 
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/handlers"
-	"github.com/UpsDev42069/BM_Search_Engine/backend/weather"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -37,20 +36,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Fetching weather information
-	weatherResponse, err := weather.GetWeather("Copenhagen", apiKey)
-	if err != nil {
-		log.Fatalf("Error fetching weather: %v", err)
-	}
-	log.Printf("Weather data for %s: Temperature %.2f°C", weatherResponse.Name, weatherResponse.Main.Temp)
-
 	r := mux.NewRouter()
 
 	// Existing routes
 	r.HandleFunc("/", handlers.RootGet).Methods("GET")
 	r.HandleFunc("/api/search", handlers.SearchHandler(database)).Methods("GET")
 	r.HandleFunc("/api/register", handlers.RegisterHandler(database)).Methods("POST")
-	r.HandleFunc("//api/login", handlers.LoginHandler(database)).Methods("POST")
+	r.HandleFunc("/api/login", handlers.LoginHandler(database)).Methods("POST")
 	r.HandleFunc("/api/weather", handlers.WeatherHandler).Methods("GET")
 
 	log.Println("Server started at :8080")
