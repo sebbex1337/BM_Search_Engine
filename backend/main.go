@@ -10,7 +10,15 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	httpSwagger "github.com/swaggo/http-swagger"
+	_ "github.com/UpsDev42069/BM_Search_Engine/backend/docs"
 )
+
+// @title BM Search Engine API
+// @version 0.1.0
+// @description This is a sample server for a BM Search Engine.
+// @host localhost:8080
+// @BasePath /
 
 func main() {
 
@@ -44,6 +52,8 @@ func main() {
 	r.HandleFunc("/api/register", handlers.RegisterHandler(database)).Methods("POST")
 	r.HandleFunc("/api/login", handlers.LoginHandler(database)).Methods("POST")
 	r.HandleFunc("/api/weather", handlers.WeatherHandler).Methods("GET")
+
+	r.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
 
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")
