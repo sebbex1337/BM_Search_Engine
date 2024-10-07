@@ -7,6 +7,7 @@ import (
 
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/handlers"
+	"github.com/rs/cors"
 
 	_ "github.com/UpsDev42069/BM_Search_Engine/backend/docs"
 	"github.com/gorilla/mux"
@@ -46,17 +47,27 @@ func main() {
 
 	r := mux.NewRouter()
 
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}).Handler(r)
+
 	// Existing routes
 	r.HandleFunc("/", handlers.RootGet).Methods("GET")
 	r.HandleFunc("/api/search", handlers.SearchHandler(database)).Methods("GET")
 	r.HandleFunc("/api/register", handlers.RegisterHandler(database)).Methods("POST")
 	r.HandleFunc("/api/login", handlers.LoginHandler(database)).Methods("POST")
 	r.HandleFunc("/api/weather", handlers.WeatherHandler).Methods("GET")
+	r.HandleFunc("/api/logout", handlers.LogoutHandler).Methods("GET")
+
+	r.HandleFunc("/api/check-login", handlers.CheckLoginHandler).Methods("GET")
 
 	r.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
 
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":8080", corsHandler)
 }

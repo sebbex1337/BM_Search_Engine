@@ -1,0 +1,14 @@
+<script lang="ts">
+  import { Router, Route } from "svelte-routing";
+  import Search from "./pages/Search.svelte";
+  import Register from "./pages/Register.svelte";
+  import Login from "./pages/Login.svelte";
+  import About from "./pages/About.svelte";
+</script>
+
+<Router>
+  <Route path="/" component={Search} />
+  <Route path="/register" component={Register} />
+  <Route path="/login" component={Login} />
+  <Route path="/about" component={About} />
+</Router>
