@@ -14,8 +14,9 @@ import (
 )
 
 type AuthResponse struct {
-	StatusCode int    `json:"statusCode"`
-	Message    string `json:"message"`
+    StatusCode int    `json:"statusCode"`
+    Message    string `json:"message"`
+    Username   string `json:"username,omitempty"` // Add the Username field
 }
 
 type SearchResponse struct {
@@ -272,7 +273,11 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
 
 		// Return success response
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(AuthResponse{StatusCode: http.StatusOK, Message: "Login successful"})
+		json.NewEncoder(w).Encode(AuthResponse{
+			StatusCode: http.StatusOK, 
+			Message: "Login successful", 
+			Username: dbUser.Username,
+		})
 	}
 }
 
@@ -323,4 +328,34 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(AuthResponse{StatusCode: http.StatusOK, Message: "Logout successful"})
+}
+
+// @Summary Check Login
+// @Description Check if the user is logged in
+// @Tags auth
+// @Produce  json
+// @Success 200 {object} AuthResponse
+// @Router /api/check-login [get]
+func CheckLoginHandler(w http.ResponseWriter, r *http.Request) {
+    userID, authenticated, err := security.GetSession(r)
+    if err != nil {
+        http.Error(w, "Error checking session", http.StatusInternalServerError)
+				return
+    }
+
+		if !authenticated || userID == "" {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(AuthResponse{
+				StatusCode: http.StatusUnauthorized,
+				Message:    "Not logged in",
+			})
+			return
+		}
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(AuthResponse{
+			StatusCode: http.StatusOK, 
+			Message: "Logged in", 
+			Username: userID,
+		})
 }
