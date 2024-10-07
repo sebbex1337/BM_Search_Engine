@@ -20,8 +20,8 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID string) error 
 	session.Values["user_id"] = userID
 
 	session.Options = &sessions.Options{
-		Path: "/",
-		MaxAge: 86400 * 7, // 7 days
+		Path:     "/",
+		MaxAge:   86400 * 7, // 7 days
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
 	}
@@ -43,7 +43,7 @@ func GetSession(r *http.Request) (string, bool, error) {
 
 	if !authenticated || !ok {
 		return "", false, nil // No session found
-	}	
+	}
 
 	fmt.Println("Session retrieved: ", session)
 

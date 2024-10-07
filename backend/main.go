@@ -48,11 +48,11 @@ func main() {
 	r := mux.NewRouter()
 
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:5173"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		AllowedHeaders: []string{"Content-Type", "Authorization"},
+		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
-	}).Handler(r);
+	}).Handler(r)
 
 	// Existing routes
 	r.HandleFunc("/", handlers.RootGet).Methods("GET")
