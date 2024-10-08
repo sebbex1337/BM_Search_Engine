@@ -20,7 +20,10 @@
 <div class="p-2.5">
   <div>
     <nav class="flex justify-between items-center whitespace-nowrap text-center">
-      <h1 class="inline-block mr-5"><a href="/">¿Who Knows?</a></h1>
+      <div class="flex items-center space-x-4">
+        <h1 class="inline-block mr-5"><a href="/">¿Who Knows?</a></h1>
+        <a class="float-left" href="/weather">Weather</a>
+      </div>
       <div class="flex space-x-4">
         {#if $session.authenticated}
           <span>Logged in as {$session.username}</span>
