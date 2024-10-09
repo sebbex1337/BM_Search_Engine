@@ -11,3 +11,10 @@ export type AuthResponse = {
   message: string;
   username?: string; // Does not need to be there
 };
+
+export interface weather {
+  main: {
+    temp: number;
+  };
+  name: string;
+}
