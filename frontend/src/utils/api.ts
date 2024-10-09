@@ -53,3 +53,13 @@ export async function register(username: string, password: string, email: string
     console.error("Error registering", error);
   }
 }
+
+export async function getWeather() {
+  try {
+    const response = await fetch(`${API_URL}/weather`)
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error getting weather", error);
+  }
+}
