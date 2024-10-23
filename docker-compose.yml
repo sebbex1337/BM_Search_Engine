@@ -1,3 +1,7 @@
+networks:
+  UpsDevs:
+    driver: bridge
+
 services:
   backend:
     build:
@@ -12,5 +16,14 @@ services:
     restart: unless-stopped
     command: ["/app/main"]
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "8069:8069"
+    depends_on:
+      - backend
+
 volumes:
   db-data:
+
+
