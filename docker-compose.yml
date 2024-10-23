@@ -14,12 +14,16 @@ services:
     volumes:
       - db-data:/app/data
     restart: unless-stopped
+    networks:
+      - UpsDevs
     command: ["/app/main"]
 
   frontend:
     build: ./frontend
     ports:
       - "8069:8069"
+    networks:
+      - UpsDevs
     depends_on:
       - backend
 
