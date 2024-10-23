@@ -17,29 +17,23 @@ What things you need to install the software and how to install them:
 
 A step-by-step series of examples that tell you how to get a development environment running.
 
-#### Backend (Go)
-
 1. **Clone the repository**:
-
     ```sh
-    git clone https://github.com/yourusername/BM_Search_Engine.git
+    git clone https://github.com/UpsDev42069/BM_Search_Engine.git
     cd BM_Search_Engine/backend
     ```
-
+    
 2. **Install dependencies**:
-
     ```sh
-    go mod tidy
+    install docker
+    install docker-compose
     ```
 
-3. **Run the backend server**:
-
+3. **Run docker-compose**:
     ```sh
-    go run main.go
+    docker-compose up --build
     ```
 
-#### Frontend (Svelte)
-WORK IN PROGRESS
 
 
 ### Running the Tests
@@ -65,7 +59,10 @@ WORK IN PROGRESS
 
 
 ### Deployment
-WORK IN PROGRESS
+[The frontend is deployed here:](13.79.97.206:8069)
+
+[The backend is deployed here:](13.79.97.206:8080)
+
 
 ### Built With
 
@@ -82,3 +79,6 @@ run the project
  go run main.go
  ```
  and go to http://localhost:8080/swagger/index.html
+
+
+ 
