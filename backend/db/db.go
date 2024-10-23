@@ -6,10 +6,25 @@ import (
 	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const DatabasePath = "./whoknows.db"
+var DatabasePath string
+
+func init() {
+	//Load environment variables
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
+	// Get the database path from the environment variable
+	DatabasePath = os.Getenv("DATABASE_PATH")
+	if DatabasePath == "" {
+		log.Fatal("DATABASE_PATH environment variable is not set")
+	}
+}
 
 // ConnectDB returns a new connection to the database.
 func ConnectDB(initMode bool) (*sql.DB, error) {
