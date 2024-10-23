@@ -1,0 +1,16 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - db-data:/app/data
+    restart: unless-stopped
+    command: ["/app/main"]
+
+volumes:
+  db-data:
