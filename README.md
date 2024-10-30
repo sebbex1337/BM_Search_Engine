@@ -1,4 +1,4 @@
-![Linting](https://github.com/UpsDev42069/BM_Search_Engine/actions/workflows/linting.yml/badge.svg)
+![Linting](https://github.com/UpsDev42069/BM_Search_Engine/actions/workflows/lint.yml/badge.svg)
 
 # BM_Search_Engine
 
