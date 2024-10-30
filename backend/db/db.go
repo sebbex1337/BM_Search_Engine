@@ -62,6 +62,16 @@ func InitDB() error {
 		return err
 	}
 
+	migration, err := os.ReadFile("./migration.sql")
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(string(migration))
+	if err != nil {
+		return err
+	}
+
 	log.Println("Initialized the database:", DatabasePath)
 	return nil
 }

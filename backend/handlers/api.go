@@ -76,8 +76,14 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		var searchResults []map[string]interface{}
-		query := "SELECT * FROM pages WHERE language = ? AND content LIKE ?"
-		args := []interface{}{language, "%" + q + "%"}
+		// Changed to use FTS5 in sqlite3
+		query := `
+    SELECT pages.title, pages.url, pages.language, pages.last_updated, pages.content
+    FROM pages_fts
+    JOIN pages ON pages_fts.title = pages.title
+    WHERE pages_fts MATCH ?
+		`
+		args := []interface{}{q}
 		results, err := db.QueryDB(database, query, args...)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
