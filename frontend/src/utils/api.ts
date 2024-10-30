@@ -1,6 +1,6 @@
 import { session } from "../stores/session";
 
-const API_URL = "http://localhost:8080/api";
+export const API_URL = import.meta.env.VITE_API_URL;
 
 export async function login(username: string, password: string) {
   try {
@@ -61,5 +61,16 @@ export async function getWeather() {
     return data;
   } catch (error) {
     console.error("Error getting weather", error);
+  }
+}
+
+export async function search(query:string) {
+  try{
+    const res = await fetch(`${API_URL}/search?q=${query}`)
+    const data = await res.json();
+    return data;
+  }catch(error){
+    console.log(error);
+    
   }
 }
