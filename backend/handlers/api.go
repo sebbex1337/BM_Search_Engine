@@ -76,8 +76,8 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		var searchResults []map[string]interface{}
-		query := "SELECT * FROM pages WHERE language = ? AND content LIKE ?"
-		args := []interface{}{language, "%" + q + "%"}
+		query := "SELECT * FROM pages WHERE language = ? AND content MATCH ?"
+		args := []interface{}{language, q}
 		results, err := db.QueryDB(database, query, args...)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
