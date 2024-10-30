@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS pages (
 CREATE VIRTUAL TABLE IF NOT EXISTS pages_fts USING fts5(
   title,
   content,
-  language UNINDEXED
+  language UNINDEXED,
   );
 
   -- Insert trigger to keep FTS table up to date
@@ -35,7 +35,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS pages_fts USING fts5(
   -- Update trigger to keep FTS table up to date
   CREATE TRIGGER IF NOT EXISTS pages_au AFTER UPDATE ON pages BEGIN
     UPDATE pages_fts 
-    SET content = NEW.content
+    SET content = NEW.content,
         language = NEW.language
     WHERE title = OLD.title;
     END;
