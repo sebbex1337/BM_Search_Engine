@@ -3,6 +3,7 @@
   import { writable } from "svelte/store";
   import Layout from "../components/Layout.svelte";
   import type { Page } from "../utils/types";
+  import { search } from "../utils/api";
 
   let searchInput: HTMLInputElement;
   let query = writable("");
@@ -13,8 +14,7 @@
   });
 
   async function makeSearchRequest() {
-    const res = await fetch(`http://localhost:8080/api/search?q=${$query}`);
-    const data = await res.json();
+    const data = await search($query)
     searchResults.set(data.data);
   }
 </script>

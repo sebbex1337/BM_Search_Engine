@@ -33,6 +33,10 @@ func main() {
 	if apiKey == "" {
 		log.Fatal("API_KEY is not set in .env file")
 	}
+	frontendURL := os.Getenv("FRONTEND_URL")
+	if frontendURL == "" {
+		log.Fatal("Frontend url not set in .env file")
+	}
 
 	// Connecting to the database
 	database, err := db.ConnectDB(false)
@@ -48,7 +52,7 @@ func main() {
 	r := mux.NewRouter()
 
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://13.79.97.206:8069"},
+		AllowedOrigins:   []string{frontendURL},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
