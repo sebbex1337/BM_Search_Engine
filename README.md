@@ -1,3 +1,5 @@
+![Linting](https://github.com/UpsDev42069/BM_Search_Engine/actions/workflows/linting.yml/badge.svg)
+
 # BM_Search_Engine
 
 This is a search engine that searches for code language keywords. The project is written in Go for the backend and in Svelte for the frontend.
@@ -18,23 +20,21 @@ What things you need to install the software and how to install them:
 A step-by-step series of examples that tell you how to get a development environment running.
 
 1. **Clone the repository**:
-    ```sh
-    git clone https://github.com/UpsDev42069/BM_Search_Engine.git
-    cd BM_Search_Engine/backend
-    ```
-    
+   ```sh
+   git clone https://github.com/UpsDev42069/BM_Search_Engine.git
+   cd BM_Search_Engine/backend
+   ```
 2. **Install dependencies**:
-    ```sh
-    install docker
-    install docker-compose
-    ```
+
+   ```sh
+   install docker
+   install docker-compose
+   ```
 
 3. **Run docker-compose**:
-    ```sh
-    docker-compose up --build
-    ```
-
-
+   ```sh
+   docker-compose up --build
+   ```
 
 ### Running the Tests
 
@@ -44,41 +44,39 @@ Explain how to run the automated tests for this system.
 
 1. **Navigate to the backend directory**:
 
-    ```sh
-    cd backend
-    ```
+   ```sh
+   cd backend
+   ```
 
 2. **Run the tests**:
 
-    ```sh
-    go test ./...
-    ```
+   ```sh
+   go test ./...
+   ```
 
 #### Frontend Tests
+
 WORK IN PROGRESS
 
-
 ### Deployment
+
 [The frontend is deployed here:](13.79.97.206:8069)
 
 [The backend is deployed here:](13.79.97.206:8080)
-
 
 ### Built With
 
 - [Go](https://golang.org/) - The backend programming language
 - [Svelte](https://svelte.dev/) - The frontend framework
 
-
 ### API Documentation
 
 To see the swagger api ui
 run the project
-```sh 
+
+```sh
  cd backend
  go run main.go
- ```
- and go to http://localhost:8080/swagger/index.html
+```
 
-
- 
+and go to http://localhost:8080/swagger/index.html
