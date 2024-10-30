@@ -1,4 +1,5 @@
 import { writable } from "svelte/store";
+import { API_URL } from "../utils/api";
 
 interface SessionState {
   authenticated: boolean;
@@ -17,7 +18,7 @@ function createSessionStore() {
     clearSession: () => set({ authenticated: false, username: null }),
     checkSession: async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/check-login", {
+        const response = await fetch(`${API_URL}/check-login`, {
           credentials: "include",
         });
         const data = await response.json();
