@@ -7,10 +7,6 @@ CREATE TABLE IF NOT EXISTS users (
   password TEXT NOT NULL
 );
 
--- Create a default user, The password is 'password' (MD5 hashed)
-INSERT INTO users (username, email, password) 
-    VALUES ('admin', 'keamonk1@stud.kea.dk', '5f4dcc3b5aa765d61d8327deb882cf99');
-
 -- Original pages table without the last_updated column
 CREATE TABLE IF NOT EXISTS pages (
     title TEXT PRIMARY KEY UNIQUE,
