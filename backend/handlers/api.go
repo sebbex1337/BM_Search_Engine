@@ -14,10 +14,10 @@ import (
 )
 
 type AuthResponse struct {
-	StatusCode int    `json:"statusCode"`
-	Message    string `json:"message"`
-	Username   string `json:"username,omitempty"` // Add the Username field
-	ResetPassword bool `json:"resetPassword,omitempty"` // Add the ResetPassword field
+	StatusCode    int    `json:"statusCode"`
+	Message       string `json:"message"`
+	Username      string `json:"username,omitempty"`      // Add the Username field
+	ResetPassword bool   `json:"resetPassword,omitempty"` // Add the ResetPassword field
 }
 
 type SearchResponse struct {
@@ -282,10 +282,10 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
 		// Return success response
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(AuthResponse{
-			StatusCode: http.StatusOK,
-			Message:    "Login successful",
-			Username:   dbUser.Username,
-			ResetPassword : resetPassword,
+			StatusCode:    http.StatusOK,
+			Message:       "Login successful",
+			Username:      dbUser.Username,
+			ResetPassword: resetPassword,
 		})
 	}
 }
@@ -368,16 +368,16 @@ func CheckLoginHandler(w http.ResponseWriter, r *http.Request) {
 		Username:   userID,
 	})
 }
-	
+
 type ResetPasswordRequest struct {
-	Username string `json:"username"`
+	Username    string `json:"username"`
 	OldPassword string `json:"oldPassword"`
 	NewPassword string `json:"newPassword"`
 }
 
 // @Summary Reset password
- func ResetPasswordHandler(database *sql.DB) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func ResetPasswordHandler(database *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -388,7 +388,7 @@ type ResetPasswordRequest struct {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
 			return
 		}
-		
+
 		var hashedPassword string
 		err = database.QueryRow("SELECT password FROM users WHERE username = ?", user.Username).Scan(&hashedPassword)
 		if err != nil {
@@ -399,14 +399,13 @@ type ResetPasswordRequest struct {
 			}
 			return
 		}
-		
+
 		// Check if the old password is correct
 
 		if !security.CheckPasswordHash(hashedPassword, user.OldPassword) {
 			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 			return
 		}
-
 
 		// Hash the new password and update the user in the database
 		newHashedPassword, err := security.HashPassword(user.NewPassword)
@@ -416,20 +415,20 @@ type ResetPasswordRequest struct {
 		}
 
 		// Update the password in the database
-	 	_, err = database.Exec("UPDATE users SET password = ? WHERE username = ?", newHashedPassword, user.Username)
+		_, err = database.Exec("UPDATE users SET password = ? WHERE username = ?", newHashedPassword, user.Username)
 		if err != nil {
 			http.Error(w, "Failed to update password", http.StatusInternalServerError)
 			return
-		}	
+		}
 
 		//Return success response
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(AuthResponse{
 			StatusCode: http.StatusOK,
-			Message: "Password reset successful",
-			Username: user.Username,
+			Message:    "Password reset successful",
+			Username:   user.Username,
 		})
 
 	}
- }
+}

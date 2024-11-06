@@ -43,7 +43,7 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID string) error 
 
 // GetSession retrieves the session and returns the userID
 func GetSession(r *http.Request) (string, bool, error) {
-	session, err := store.Get(r, "session-name")
+	session, err := store.Get(r, "user-session")
 	if err != nil {
 		return "", false, err
 	}
@@ -62,7 +62,7 @@ func GetSession(r *http.Request) (string, bool, error) {
 
 // DestroySession destroys the current session
 func DestroySession(w http.ResponseWriter, r *http.Request) error {
-	session, err := store.Get(r, "session-name")
+	session, err := store.Get(r, "user-session")
 	if err != nil {
 		return err
 	}
