@@ -415,7 +415,7 @@ func ResetPasswordHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		// Update the password in the database
-		_, err = database.Exec("UPDATE users SET password = ?, SET password_reset_required = ? WHERE username = ?", newHashedPassword, false, user.Username)
+		_, err = database.Exec("UPDATE users SET password = ?, password_reset_required = ? WHERE username = ?", newHashedPassword, false, user.Username)
 		if err != nil {
 			http.Error(w, "Failed to update password", http.StatusInternalServerError)
 			return
