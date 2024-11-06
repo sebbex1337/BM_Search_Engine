@@ -73,3 +73,22 @@ export async function search(query: string) {
     console.log(error);
   }
 }
+
+export async function resetPassword(username: string, oldPassword: string, newPassword: string) {
+  try {
+    const res = await fetch(`${API_URL}/reset-password`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, oldPassword, newPassword }),
+      credentials: "include",
+    });
+    if (res.ok) {
+      return res;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+}
