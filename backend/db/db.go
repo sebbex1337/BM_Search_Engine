@@ -11,11 +11,11 @@ import (
 )
 
 var (
-	DBHost = os.Getenv("DB_HOST")
-	DBPort = os.Getenv("DB_PORT")
-	DBUser = os.Getenv("DB_USER")
+	DBHost     = os.Getenv("DB_HOST")
+	DBPort     = os.Getenv("DB_PORT")
+	DBUser     = os.Getenv("DB_USER")
 	DBPassword = os.Getenv("DB_PASSWORD")
-	DBName = os.Getenv("DB_NAME")
+	DBName     = os.Getenv("DB_NAME")
 )
 
 func init() {
@@ -27,8 +27,8 @@ func init() {
 
 	// Check environment variables are set
 	if DBHost == "" || DBPort == "" || DBUser == "" || DBPassword == "" || DBName == "" {
-        log.Fatal("Database configuration environment variables are not set")
-    }
+		log.Fatal("Database configuration environment variables are not set")
+	}
 }
 
 // ConnectDB returns a new connection to the database.
@@ -38,9 +38,9 @@ func ConnectDB(initMode bool) (*sql.DB, error) {
 			return nil, err
 		}
 	}
-	
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", 
-			DBHost, DBPort, DBUser, DBPassword, DBName)
+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		DBHost, DBPort, DBUser, DBPassword, DBName)
 	return sql.Open("postgres", psqlInfo)
 }
 
