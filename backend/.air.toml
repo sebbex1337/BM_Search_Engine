@@ -43,7 +43,6 @@ tmp_dir = "tmp"
   clean_on_exit = false
 
 [env]
-  CGO_ENABLED = "1"
   GO_ENV = "development"
 
 [proxy]
