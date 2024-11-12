@@ -8,12 +8,13 @@ CREATE TABLE IF NOT EXISTS users (
   password_reset_required BOOLEAN DEFAULT FALSE
 );
 
--- Original pages table without the last_updated column
 CREATE TABLE IF NOT EXISTS pages (
     title TEXT PRIMARY KEY UNIQUE,
     url TEXT NOT NULL UNIQUE,
-    language TEXT NOT NULL CHECK(language IN ('en', 'da')) DEFAULT 'en', -- How you define ENUM type in SQLite
+    language TEXT NOT NULL CHECK(language IN ('en', 'da')) DEFAULT 'en',
     last_updated TIMESTAMP,
     content TEXT NOT NULL
 );
 
+-- Full-Text Search Index
+CREATE INDEX pages_fts_idx ON pages USING gin (to_tsvector('english', content));

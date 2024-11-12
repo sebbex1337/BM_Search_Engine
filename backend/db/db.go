@@ -7,10 +7,16 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
-var DatabasePath string
+var (
+	DBHost = os.Getenv("DB_HOST")
+	DBPort = os.Getenv("DB_PORT")
+	DBUser = os.Getenv("DB_USER")
+	DBPassword = os.Getenv("DB_PASSWORD")
+	DBName = os.Getenv("DB_NAME")
+)
 
 func init() {
 	//Load environment variables
@@ -19,11 +25,10 @@ func init() {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	// Get the database path from the environment variable
-	DatabasePath = os.Getenv("DATABASE_PATH")
-	if DatabasePath == "" {
-		log.Fatal("DATABASE_PATH environment variable is not set")
-	}
+	// Check environment variables are set
+	if DBHost == "" || DBPort == "" || DBUser == "" || DBPassword == "" || DBName == "" {
+        log.Fatal("Database configuration environment variables are not set")
+    }
 }
 
 // ConnectDB returns a new connection to the database.
@@ -33,46 +38,31 @@ func ConnectDB(initMode bool) (*sql.DB, error) {
 			return nil, err
 		}
 	}
-	return sql.Open("sqlite3", DatabasePath)
+	
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", 
+			DBHost, DBPort, DBUser, DBPassword, DBName)
+	return sql.Open("postgres", psqlInfo)
 }
 
-// CheckDBExists checks if the database file exists.
+// CheckDBExists checks if the database exists
 func CheckDBExists() error {
-	if _, err := os.Stat(DatabasePath); os.IsNotExist(err) {
-		return fmt.Errorf("database not found")
-	}
-	return nil
-}
-
-// InitDB initializes the database tables.
-func InitDB() error {
 	db, err := ConnectDB(true)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	schema, err := os.ReadFile("./schema.sql")
+	var exists bool
+	query := "SELECT EXISTS(SELECT 1 FROM pg_database WHERE datname=$1)"
+	err = db.QueryRow(query, DBName).Scan(&exists)
 	if err != nil {
 		return err
 	}
 
-	_, err = db.Exec(string(schema))
-	if err != nil {
-		return err
+	if !exists {
+		return fmt.Errorf("database %s does not exist", DBName)
 	}
 
-	migration, err := os.ReadFile("./migration.sql")
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Exec(string(migration))
-	if err != nil {
-		return err
-	}
-
-	log.Println("Initialized the database:", DatabasePath)
 	return nil
 }
 
@@ -112,13 +102,17 @@ func QueryDB(db *sql.DB, query string, args ...interface{}) ([]map[string]interf
 		results = append(results, result)
 	}
 
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return results, nil
 }
 
 // GetUserID looks up the id for a username.
 func GetUserID(db *sql.DB, username string) (int, error) {
 	var id int
-	err := db.QueryRow("SELECT id FROM users WHERE username = ?", username).Scan(&id)
+	err := db.QueryRow("SELECT id FROM users WHERE username = $1", username).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
