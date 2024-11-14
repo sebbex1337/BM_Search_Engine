@@ -4,6 +4,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 
@@ -77,7 +78,7 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		var searchResults []map[string]interface{}
-		// Changed to use FTS5 in sqlite3
+		// changed to use postgresQL
 		query := `
 			SELECT title, url, language, last_updated, content
 			FROM pages
@@ -177,6 +178,7 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 
 		_, err = database.Exec(insertUserSQL, user.Username, hashedPassword, user.Email)
 		if err != nil {
+			log.Printf("Error inserting user: %v", err)
 			http.Error(w, "Failed to register user", http.StatusInternalServerError)
 			return
 		}
