@@ -17,29 +17,35 @@
   }
 </script>
 
-<div class="p-2.5">
-  <div>
-    <nav class="flex justify-between items-center whitespace-nowrap text-center">
-      <div class="flex items-center space-x-4">
-        <h1 class="inline-block mr-5"><a href="/">¿Who Knows?</a></h1>
-        <a class="float-left" href="/weather">Weather</a>
-      </div>
-      <div class="flex space-x-4">
-        {#if $session.authenticated}
-          <span>Logged in as {$session.username}</span>
-          <button on:click={handleLogout}>Logout</button>
-        {:else}
-          <a class="float-right" href="/login">Log in</a>
-          <a class="float-right" href="/register">Register</a>
-        {/if}
-      </div>
-    </nav>
-  </div>
-  <div class="p-2.5">
+<!-- Top-level container with Flexbox layout -->
+<div class="min-h-screen flex flex-col p-2.5">
+  
+  <!-- Navigation Bar -->
+  <nav class="flex justify-between items-center whitespace-nowrap text-center mb-4">
+    <div class="flex items-center space-x-4">
+      <h1 class="inline-block mr-5"><a href="/">¿Who Knows?</a></h1>
+      <a href="/weather">Weather</a>
+    </div>
+    <div class="flex space-x-4">
+      {#if $session.authenticated}
+        <span>Logged in as {$session.username}</span>
+        <button on:click={handleLogout} class="px-3 py-1 bg-blue-500 text-white rounded">Logout</button>
+      {:else}
+        <a href="/login" class="px-3 py-1 bg-green-500 text-white rounded">Log in</a>
+        <a href="/register" class="px-3 py-1 bg-indigo-500 text-white rounded">Register</a>
+      {/if}
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow p-2.5">
     <slot></slot>
-  </div>
-  <div class="bg-gray-200 text-gray-500 p-1.5 text-xs">
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-200 text-gray-700 p-4 text-xs flex flex-col sm:flex-row justify-between items-center">
     <span>¿Who Knows? &copy; 2009</span>
-    <a href="/about">About</a>
-  </div>
+    <a href="/about" class="text-blue-500 hover:underline mt-2 sm:mt-0">About</a>
+  </footer>
+
 </div>
