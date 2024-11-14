@@ -1,6 +1,6 @@
 export type Page = {
   title: string;
-  URL: string;
+  url: string;
   Language: string;
   LastUpdated: string;
   Content: string;
