@@ -15,9 +15,9 @@
 
 <Layout>
   <h1>Weather</h1>
-  <br>
+  <br />
   {#if $weatherData}
-    <h1>City: {$weatherData.name} </h1>
+    <h1>City: {$weatherData.name}</h1>
     <h1>Temperature: {$weatherData.main.temp} °C</h1>
   {:else}
     <h1>Loading...</h1>

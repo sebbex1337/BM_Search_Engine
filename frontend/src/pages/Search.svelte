@@ -14,7 +14,7 @@
   });
 
   async function makeSearchRequest() {
-    const data = await search($query)
+    const data = await search($query);
     searchResults.set(data.data);
   }
 </script>
