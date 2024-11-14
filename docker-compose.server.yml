@@ -38,6 +38,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - /etc/letsencrypt/live/whonose.dk:/etc/letsencrypt/live/whonose.dk
+      - /etc/letsencrypt/archive/whonose.dk:/etc/letsencrypt/archive/whonose.dk
     depends_on:
       - backend
       - frontend
