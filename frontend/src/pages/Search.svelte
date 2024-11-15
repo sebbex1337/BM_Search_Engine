@@ -14,7 +14,7 @@
   });
 
   async function makeSearchRequest() {
-    const data = await search($query)
+    const data = await search($query);
     searchResults.set(data.data);
   }
 </script>
@@ -41,7 +41,7 @@
 
       {#each $searchResults as page}
         <div class="mb-4 bg-gray-200 rounded p-2">
-          <h3 class="text-lg font-medium"><a href={page.URL} class="text-blue-500">{page.title}</a></h3>
+          <h3 class="text-lg font-medium"><a href={page.url} class="text-blue-500">{page.title}</a></h3>
         </div>
       {/each}
     {/if}

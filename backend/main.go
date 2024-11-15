@@ -45,10 +45,6 @@ func main() {
 	}
 	defer database.Close()
 
-	if err := db.InitDB(); err != nil {
-		log.Fatal(err)
-	}
-
 	r := mux.NewRouter()
 
 	corsHandler := cors.New(cors.Options{

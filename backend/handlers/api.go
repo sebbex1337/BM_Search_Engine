@@ -4,6 +4,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 
@@ -77,12 +78,11 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		var searchResults []map[string]interface{}
-		// Changed to use FTS5 in sqlite3
+		// changed to use postgresQL
 		query := `
-    SELECT pages.title, pages.url, pages.language, pages.last_updated, pages.content
-    FROM pages_fts
-    JOIN pages ON pages_fts.title = pages.title
-    WHERE pages_fts MATCH ?
+			SELECT title, url, language, last_updated, content
+			FROM pages
+			WHERE to_tsvector('english', content) @@ plainto_tsquery($1)
 		`
 		args := []interface{}{q}
 		results, err := db.QueryDB(database, query, args...)
@@ -167,7 +167,7 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		// Save the user to the database
-		insertUserSQL := `INSERT INTO users (username, password, email) VALUES (?, ?, ?)`
+		insertUserSQL := `INSERT INTO users (username, password, email) VALUES ($1, $2, $3)`
 
 		// Hash password before saving it to the database
 		hashedPassword, err := security.HashPassword(user.Password)
@@ -178,6 +178,7 @@ func RegisterHandler(database *sql.DB) http.HandlerFunc {
 
 		_, err = database.Exec(insertUserSQL, user.Username, hashedPassword, user.Email)
 		if err != nil {
+			log.Printf("Error inserting user: %v", err)
 			http.Error(w, "Failed to register user", http.StatusInternalServerError)
 			return
 		}
@@ -256,7 +257,7 @@ func LoginHandler(database *sql.DB) http.HandlerFunc {
 		// Query the database for the user
 		var dbUser LoginRequest
 		var resetPassword bool
-		err = database.QueryRow("SELECT username, password, password_reset_required FROM users WHERE username = ?", user.Username).Scan(&dbUser.Username, &dbUser.Password, &resetPassword)
+		err = database.QueryRow("SELECT username, password, password_reset_required FROM users WHERE username = $1", user.Username).Scan(&dbUser.Username, &dbUser.Password, &resetPassword)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
@@ -390,7 +391,7 @@ func ResetPasswordHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		var hashedPassword string
-		err = database.QueryRow("SELECT password FROM users WHERE username = ?", user.Username).Scan(&hashedPassword)
+		err = database.QueryRow("SELECT password FROM users WHERE username = $1", user.Username).Scan(&hashedPassword)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
@@ -415,7 +416,7 @@ func ResetPasswordHandler(database *sql.DB) http.HandlerFunc {
 		}
 
 		// Update the password in the database
-		_, err = database.Exec("UPDATE users SET password = ?, password_reset_required = ? WHERE username = ?", newHashedPassword, false, user.Username)
+		_, err = database.Exec("UPDATE users SET password = $1, password_reset_required = $2 WHERE username = $3", newHashedPassword, false, user.Username)
 		if err != nil {
 			http.Error(w, "Failed to update password", http.StatusInternalServerError)
 			return

@@ -19,8 +19,7 @@ RUN go mod download
 COPY . .
 
 # Enable CGO and build the Go app
-ENV CGO_ENABLED=1
-RUN go build -tags "sqlite_fts5" -o main .
+RUN go build -o main .
 
 # Expose port 8080 to the outside world
 EXPOSE 8080

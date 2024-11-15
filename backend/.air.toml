@@ -5,7 +5,7 @@ tmp_dir = "tmp"
 [build]
   args_bin = []
   bin = "./tmp/main"
-  cmd = "go build -tags \"sqlite_fts5\" -o ./tmp/main ."
+  cmd = "go build -o ./tmp/main ."
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
   exclude_file = []
@@ -43,7 +43,6 @@ tmp_dir = "tmp"
   clean_on_exit = false
 
 [env]
-  CGO_ENABLED = "1"
   GO_ENV = "development"
 
 [proxy]

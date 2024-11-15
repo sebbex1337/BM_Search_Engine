@@ -2,13 +2,10 @@
 FROM golang:1.23.1-alpine
 
 # Install necessary dependencies for CGO and SQLite
-RUN apk add --no-cache gcc musl-dev sqlite-dev git
+RUN apk add --no-cache git
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
-
-# Enable CGO
-ENV CGO_ENABLED=1
 
 # Install air for live reloading
 RUN go install github.com/air-verse/air@latest

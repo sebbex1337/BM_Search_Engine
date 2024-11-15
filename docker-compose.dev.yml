@@ -4,6 +4,22 @@ networks:
     driver: bridge
 
 services:
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    volumes:
+      - database:/var/lib/postgresql/data
+    env_file:
+      - ./database/.env
+    restart: unless-stopped
+    networks:
+      - UpsDevs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   backend:
     build:
       context: ./backend
@@ -17,6 +33,8 @@ services:
       - /app/vendor
     networks:
       - UpsDevs
+    depends_on:
+      - database
     command: ["air"]
 
   frontend:
@@ -35,3 +53,6 @@ services:
     depends_on:
       - backend
     command: ["npm", "run", "dev", "--", "--host"]
+
+volumes:
+  database:

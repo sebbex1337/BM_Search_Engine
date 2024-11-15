@@ -16,7 +16,6 @@
       return;
     }
     const registerResponse = await register($username, $password, $email);
-    console.log(registerResponse);
     if (registerResponse && registerResponse.ok) {
       // TODO: login users after registration
       error.set(null);
