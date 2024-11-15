@@ -30,7 +30,7 @@
       }}
       class="flex-grow p-2 border border-gray-300 rounded"
     />
-    <button on:click={makeSearchRequest} class="py-2 px-8 border border-blue-600 rounded bg-blue-600 cursor-pointer"
+    <button on:click={makeSearchRequest} class="py-2 px-8 border border-blue-600 rounded bg-blue-600 text-white cursor-pointer"
       >Search</button
     >
   </div>
