@@ -35,7 +35,7 @@ services:
       - UpsDevs
     depends_on:
       - database
-    command: ["air"] 
+    command: ["air"]
 
   frontend:
     build:
@@ -53,6 +53,18 @@ services:
     depends_on:
       - backend
     command: ["npm", "run", "dev", "--", "--host"]
+
+  # prometheus:
+  #   image: prom/prometheus
+  #   container_name: prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - UpsDevs
+  #   depends_on:
+  #     - backend
 
 volumes:
   database:
