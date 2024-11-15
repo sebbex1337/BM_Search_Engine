@@ -7,6 +7,7 @@ import (
 
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/handlers"
+	"github.com/UpsDev42069/BM_Search_Engine/backend/metrics"
 	"github.com/rs/cors"
 
 	_ "github.com/UpsDev42069/BM_Search_Engine/backend/docs"
@@ -16,7 +17,7 @@ import (
 )
 
 // @title BM Search Engine API
-// @version 0.1.0
+// @version 2.0
 // @description This is a sample server for a BM Search Engine.
 // @host localhost:8080
 // @BasePath /
@@ -28,6 +29,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+
+
 
 	apiKey := os.Getenv("API_KEY")
 	if apiKey == "" {
@@ -44,6 +48,9 @@ func main() {
 		log.Fatal(err)
 	}
 	defer database.Close()
+
+	//Initialize metrics collection
+	metrics.CollectSystemMetrics()
 
 	r := mux.NewRouter()
 
@@ -65,6 +72,12 @@ func main() {
 	r.HandleFunc("/api/check-login", handlers.CheckLoginHandler).Methods("GET")
 
 	r.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
+
+	//expose the metrics endpoint
+	r.Handle("/metrics", promhttp.Handler())
+
+	//apply Prometheus middleware
+	loggedMux := metrics.PrometheusMiddleware(r)
 
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")
