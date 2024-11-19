@@ -50,6 +50,8 @@ func main() {
 	}
 	defer database.Close()
 
+	db.RunMigrations();
+
 	r := mux.NewRouter()
 
 	// Middleware for metrics

@@ -12,6 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - database:/var/lib/postgresql/data
+      - ./backend/migrations:/app/migrations
     env_file:
       - ./database/.env
     restart: unless-stopped
@@ -31,6 +32,7 @@ services:
     volumes:
       - ./backend:/app
       - /app/vendor
+      - ./backend/migrations:/app/migrations
     networks:
       - UpsDevs
     depends_on:

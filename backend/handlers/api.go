@@ -82,9 +82,11 @@ func SearchHandler(database *sql.DB) http.HandlerFunc {
 		var searchResults []map[string]interface{}
 		// changed to use postgresQL
 		query := `
-			SELECT title, url, language, last_updated, content
-			FROM pages
-			WHERE to_tsvector('english', content) @@ plainto_tsquery($1)
+		SELECT title, url, language, last_updated, content,
+           ts_rank(content_tsvector, plainto_tsquery('english', $1)) AS rank
+    FROM pages
+    WHERE content_tsvector @@ plainto_tsquery('english', $1)
+    ORDER BY rank DESC
 		`
 		args := []interface{}{q}
 		results, err := db.QueryDB(database, query, args...)
