@@ -50,7 +50,7 @@ func main() {
 	}
 	defer database.Close()
 
-	db.RunMigrations();
+	db.RunMigrations()
 
 	r := mux.NewRouter()
 
@@ -78,7 +78,6 @@ func main() {
 
 	// Metrics endpoint
 	r.Handle("/api/metrics", metrics.Handler()).Methods("GET")
-
 
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")

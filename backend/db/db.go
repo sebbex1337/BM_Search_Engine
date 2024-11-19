@@ -135,9 +135,8 @@ func RunMigrations() {
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
 
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", 
-			dbUser, dbPassword, dbHost, dbPort, dbName)
-	
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	m, err := migrate.New(
 		"file://migrations",
