@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS pages_fts_idx ON pages USING gin (content_tsvector);

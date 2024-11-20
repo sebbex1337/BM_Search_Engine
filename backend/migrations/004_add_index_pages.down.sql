@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS pages_fts_idx;

@@ -4,9 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/UpsDev42069/BM_Search_Engine/backend/db"
 	"github.com/UpsDev42069/BM_Search_Engine/backend/handlers"
+	"github.com/UpsDev42069/BM_Search_Engine/backend/metrics"
 	"github.com/rs/cors"
 
 	_ "github.com/UpsDev42069/BM_Search_Engine/backend/docs"
@@ -16,13 +18,11 @@ import (
 )
 
 // @title BM Search Engine API
-// @version 0.1.0
+// @version 2.0
 // @description This is a sample server for a BM Search Engine.
 // @host localhost:8080
 // @BasePath /
-
 func main() {
-
 	// Load environment variables from .env file
 	err := godotenv.Load()
 	if err != nil {
@@ -38,6 +38,11 @@ func main() {
 		log.Fatal("Frontend url not set in .env file")
 	}
 
+	// Init metrics
+	metrics.Init()
+
+	go metrics.CollectSystemMetrics(10 * time.Second)
+
 	// Connecting to the database
 	database, err := db.ConnectDB(false)
 	if err != nil {
@@ -45,7 +50,12 @@ func main() {
 	}
 	defer database.Close()
 
+	db.RunMigrations()
+
 	r := mux.NewRouter()
+
+	// Middleware for metrics
+	r.Use(metrics.Middleware)
 
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{frontendURL},
@@ -66,8 +76,13 @@ func main() {
 
 	r.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
 
+	// Metrics endpoint
+	r.Handle("/api/metrics", metrics.Handler()).Methods("GET")
+
 	log.Println("Server started at :8080")
 	log.Println("http://localhost:8080")
 
-	http.ListenAndServe(":8080", corsHandler)
+	if err := http.ListenAndServe(":8080", corsHandler); err != nil {
+		log.Fatalf("Error starting server: %v", err)
+	}
 }
