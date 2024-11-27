@@ -29,7 +29,7 @@ Vi har valgt at bruge en issue-skabelon for at gøre det nemmere at forstå, hva
 ❓ Hvis nogen er usikre på, hvad der skal gøres, kan de bede om hjælp i issue-tråden.
 
 ## 🌳 Valg af Branching-strategi
-Vi har valgt en slags hybrid af **Gitflow** og **GitHub flow** som vores branching-strategi. 
+Vi har valgt en slags hybrid af **Feature Branching** og **GitHub flow** som vores branching-strategi. 
 🔀 Vi har vores `Prod`, `Dev` og `Testing` branches. 
 - `Prod`-branchen er vores produktionsgren
 - `Dev`-branchen er vores udviklingsgren

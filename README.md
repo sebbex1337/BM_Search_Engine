@@ -1,5 +1,12 @@
 ![Linting](https://github.com/UpsDev42069/BM_Search_Engine/actions/workflows/lint.yml/badge.svg)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=UpsDev42069_BM_Search_Engine&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=UpsDev42069_BM_Search_Engine)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=UpsDev42069_BM_Search_Engine&metric=bugs)](https://sonarcloud.io/summary/new_code?id=UpsDev42069_BM_Search_Engine)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=UpsDev42069_BM_Search_Engine&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=UpsDev42069_BM_Search_Engine)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=UpsDev42069_BM_Search_Engine&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=UpsDev42069_BM_Search_Engine)
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/51d8069865a6cd53db13/maintainability)](https://codeclimate.com/github/UpsDev42069/BM_Search_Engine/maintainability)
+
 # BM_Search_Engine
 
 This is a search engine that searches for code language keywords. The project is written in Go for the backend and in Svelte for the frontend.
