@@ -1,4 +1,4 @@
-import fs from "fs";
+/* import fs from "fs";
 
 // Load package.json
 const packageJson = JSON.parse(fs.readFileSync("package.json", "utf-8"));
@@ -84,3 +84,4 @@ const dotContent = generateDot(allDependencies);
 
 fs.writeFileSync("frontend-dependency-graph.dot", dotContent, "utf-8");
 console.log("Frontend dependency graph generated: frontend-dependency-graph.dot");
+ */
