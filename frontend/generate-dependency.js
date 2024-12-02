@@ -21,7 +21,7 @@ digraph G {
     sep=0.3;
     nodesep=0.2;
     ranksep=1;
-    node [shape=rectangle, style=filled, fontname="Helvetica", fontsize=10, color="#c6c5fe", fontcolor="#c6c5fe"];
+    node [shape=rectangle, style=filled, fontname="Helvetica", fontsize=10];
 
     // Define clusters for better organization
 
